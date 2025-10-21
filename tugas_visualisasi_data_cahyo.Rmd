@@ -1,0 +1,94 @@
+---
+title: "Tugas Data Visual"
+author: "Cahyo Ersa Syaputra-RPL-A320240018-Institut Teknologi Statistika dan Bisnis Muhammadiyah"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: flatly
+    higlight: zenburn
+    toc: true
+    toc_float:
+      collapsed: true
+    df_print: paged
+---
+
+```{=html}
+<style>
+body{
+text-align: justify}
+</style>
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Langkah Pertama
+
+
+## 1.1 Pendahuluan
+
+Tujuan bab ini adalah untuk mengajarkan Anda cara menghasilkan grafik yang bermanfaat dengan ggplot2 secepat mungkin. Anda akan mempelajari dasar-dasarnya `ggplot()` beserta beberapa "resep" bermanfaat untuk membuat plot yang paling penting. `ggplot()` Hal ini memungkinkan Anda membuat plot yang kompleks hanya dengan beberapa baris kode karena didasarkan pada teori dasar yang kaya, yaitu tata bahasa grafik. Di sini, kita akan melewatkan teori dan berfokus pada praktik, dan di bab-bab selanjutnya Anda akan mempelajari cara memanfaatkan sepenuhnya kekuatan ekspresif tata bahasa.
+
+Dalam bab ini Anda akan mempelajari:
+
+- Tentang `mpg` dataset yang disertakan dengan ggplot2,
+- Tiga komponen utama setiap plot: data, estetika, dan geometri, 
+- Cara menambahkan variabel tambahan ke plot dengan estetika, 
+- Cara menampilkan variabel kategoris tambahan dalam plot menggunakan kelipatan kecil yang dibuat dengan faceting, 
+- Berbagai geom berbeda yang dapat Anda gunakan untuk membuat berbagai jenis plot,
+- Cara memodifikasi sumbu, 
+- Hal-hal yang dapat Anda lakukan dengan objek plot selain menampilkannya, seperti menyimpannya ke disk.
+
+
+## 1.2 Data Penghematan Bahan Bakar
+Dalam bab ini, kami akan menggunakan satu set data yang dibundel dengan ggplot2: mpg. Data ini mencakup informasi tentang konsumsi bahan bakar model mobil populer pada tahun 1999 dan 2008, yang dikumpulkan oleh Badan Perlindungan Lingkungan AS, <http://fueleconomy.gov> . Anda dapat mengakses data tersebut dengan memuat ggplot2:
+
+```{r}
+#> # A tibble: 234 × 11
+#>   manufacturer model displ  year   cyl trans      drv     cty   hwy fl    class 
+#>   <chr>        <chr> <dbl> <int> <int> <chr>      <chr> <int> <int> <chr> <chr> 
+#> 1 audi         a4      1.8  1999     4 auto(l5)   f        18    29 p     compa…
+#> 2 audi         a4      1.8  1999     4 manual(m5) f        21    29 p     compa…
+#> 3 audi         a4      2    2008     4 manual(m6) f        20    31 p     compa…
+#> 4 audi         a4      2    2008     4 auto(av)   f        21    30 p     compa…
+#> 5 audi         a4      2.8  1999     6 auto(l5)   f        16    26 p     compa…
+#> 6 audi         a4      2.8  1999     6 manual(m5) f        18    26 p     compa…
+#> # ℹ 228 more rows
+```
+
+Variabel-variabelnya sebagian besar dapat dijelaskan sendiri:
+- `cty` dan `hwy` rekor mil per galon (mpg) untuk berkendara di kota dan jalan raya.
+- `displ` adalah kapasitas mesin dalam liter.
+- `drv` adalah drivetrain: roda depan (f), roda belakang (r) atau empat roda (4).
+- `model` adalah model mobil. Ada 38 model yang dipilih karena memiliki edisi baru setiap tahun antara tahun 1999 dan 2008.
+- `class` adalah variabel kategoris yang menggambarkan “tipe” mobil: dua penumpang, SUV, kompak, dll.
+
+Kumpulan data ini memunculkan banyak pertanyaan menarik. Bagaimana ukuran mesin dan efisiensi bahan bakar saling terkait? Apakah produsen tertentu lebih memperhatikan efisiensi bahan bakar daripada yang lain? Apakah efisiensi bahan bakar telah meningkat dalam sepuluh tahun terakhir? Kami akan mencoba menjawab beberapa pertanyaan ini, dan dalam prosesnya mempelajari cara membuat beberapa plot dasar dengan ggplot2.
+
+
+### 1.2.1 Latihan
+1. Sebutkan lima fungsi yang dapat Anda gunakan untuk mendapatkan informasi lebih lanjut tentang `mpg` kumpulan data.
+
+2. Bagaimana Anda dapat mengetahui kumpulan data apa saja yang disertakan dengan ggplot2?
+
+3. Selain AS, sebagian besar negara menggunakan konsumsi bahan bakar (bahan bakar yang dikonsumsi untuk jarak tertentu) alih-alih efisiensi bahan bakar (jarak tempuh dengan jumlah bahan bakar tetap). Bagaimana Anda bisa mengonversi ctydan hwyke standar Eropa l/100 km?
+
+4. Produsen mana yang memiliki model terbanyak dalam kumpulan data ini? Model mana yang memiliki variasi terbanyak? Apakah jawaban Anda berubah jika Anda menghapus spesifikasi sistem penggerak yang berulang (misalnya "pathfinder 4wd", "a4 quattro") dari nama model?
+
+
+## 1.3 Komponen Utama
+Setiap plot ggplot2 memiliki tiga komponen utama:
+
+1. **data**,
+2. Seperangkat **pemetaan estetika** antara variabel dalam data dan properti visual, dan
+3. Setidaknya satu lapisan yang menjelaskan cara merender setiap observasi. Lapisan biasanya dibuat dengan fungsi **geom**.
+
+Berikut ini contoh sederhananya:
+
+```{r}
+library(ggplot2)
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point()
+```
